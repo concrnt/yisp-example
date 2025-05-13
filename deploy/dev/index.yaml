@@ -1,14 +1,14 @@
 !yisp
 - import
-- [concrnt, ../templates/concrnt/index.yaml]
-- [postgres, ../templates/postgres/index.yaml]
-- [redis, ../templates/redis/index.yaml]
-- [memcached, ../templates/memcached/index.yaml]
-- [hyperproxy, ../templates/hyperproxy/index.yaml]
-- [activitypub, ../templates/ccworld-ap-bridge/index.yaml]
-- [mediaserver, ../templates/mediaserver/index.yaml]
-- [meilisearch, ../templates/meilisearch/index.yaml]
-- [search, ../templates/search/index.yaml]
+- [concrnt, ../../templates/concrnt/index.yaml]
+- [postgres, ../../templates/postgres/index.yaml]
+- [redis, ../../templates/redis/index.yaml]
+- [memcached, ../../templates/memcached/index.yaml]
+- [hyperproxy, ../../templates/hyperproxy/index.yaml]
+- [activitypub, ../../templates/ccworld-ap-bridge/index.yaml]
+- [mediaserver, ../../templates/mediaserver/index.yaml]
+- [meilisearch, ../../templates/meilisearch/index.yaml]
+- [search, ../../templates/search/index.yaml]
 
 ---
 # basic resources
@@ -74,5 +74,22 @@
     url: "http://meilisearch:7700"
     key: "concrnt-meilisearch"
     idx: "concrnt"
+
+---
+# configmaps
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: concrnt-config
+data: !yisp
+  - fromEntries
+  - - map
+    - - lambda
+      - [file]
+      - !quote
+        - *file.name
+        - *file.body
+    - - open
+      - ./cm-files/*
 
 
