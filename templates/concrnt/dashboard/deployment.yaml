@@ -1,0 +1,30 @@
+!yisp &deploy
+- lambda
+- [props]
+- !quote
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: dashboard
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: dashboard
+    template:
+      metadata:
+        labels:
+          name: dashboard
+      spec:
+        containers:
+        - name: dashboard
+          image: *props.image
+          ports:
+            - name: web
+              containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /web/index.html
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 3

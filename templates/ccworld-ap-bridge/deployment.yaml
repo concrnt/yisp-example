@@ -1,0 +1,37 @@
+!yisp &deploy
+- lambda
+- [props]
+- !quote
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: ccactivitypub
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: ccactivitypub
+    template:
+      metadata:
+        labels:
+          name: ccactivitypub
+      spec:
+        containers:
+        - name: ccactivitypub
+          image: *props.image
+          ports:
+            - name: web
+              containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          volumeMounts:
+            - name: activitypub-config
+              mountPath: /etc/concrnt/config
+        volumes:
+          - name: activitypub-config
+            configMap:
+              name: activitypub-config

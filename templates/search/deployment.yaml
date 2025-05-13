@@ -1,0 +1,36 @@
+!yisp &deploy
+- lambda
+- [props]
+- !quote
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: cc-search
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: cc-search
+    template:
+      metadata:
+        labels:
+          name: cc-search
+      spec:
+        containers:
+        - name: cc-search
+          image: *props.image
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_DSN
+              value: *props.dsn
+            - name: REDIS_URL
+              value: *props.redisAddr
+            - name: MEILISEARCH_URL
+              value: *props.meilisearch.url
+            - name: MEILISEARCH_KEY
+              value: *props.meilisearch.key
+            - name: MEILISEARCH_IDX
+              value: *props.meilisearch.idx
+            - name: PORT
+              value: "8000"

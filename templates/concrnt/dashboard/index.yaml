@@ -1,0 +1,20 @@
+!yisp
+- import
+- ["d", deployment.yaml]
+
+---
+!yisp &dashboard
+- lambda
+- [props]
+- - flatten
+  - - *d.deploy
+    - *props
+  - - include
+    - service.yaml
+
+---
+# example
+!yisp
+- *dashboard
+- image: ghcr.io/concrnt/web-dashboard
+

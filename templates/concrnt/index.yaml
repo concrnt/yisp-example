@@ -1,0 +1,33 @@
+!yisp
+- import
+- ["a", ./api/index.yaml]
+- ["g", ./gateway/index.yaml]
+- ["d", ./dashboard/index.yaml]
+
+---
+!yisp &main
+- lambda
+- [props]
+- - flatten
+  - - *a.api
+    - *props.api
+  - - *g.gateway
+    - *props.gateway
+  - - *d.dashboard
+    - *props.dashboard
+
+---
+# example
+!yisp
+- *main
+- api:
+    image: ghcr.io/concrnt/ccapi
+    configpath: /etc/concrnt/config
+    svcType: LoadBalancer
+  gateway:
+    image: ghcr.io/concrnt/ccgateway
+    configpath: /etc/concrnt/config
+    svcType: LoadBalancer
+  dashboard:
+    image: ghcr.io/concrnt/web-dashboard
+

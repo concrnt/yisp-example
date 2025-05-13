@@ -1,0 +1,78 @@
+!yisp
+- import
+- [concrnt, ../templates/concrnt/index.yaml]
+- [postgres, ../templates/postgres/index.yaml]
+- [redis, ../templates/redis/index.yaml]
+- [memcached, ../templates/memcached/index.yaml]
+- [hyperproxy, ../templates/hyperproxy/index.yaml]
+- [activitypub, ../templates/ccworld-ap-bridge/index.yaml]
+- [mediaserver, ../templates/mediaserver/index.yaml]
+- [meilisearch, ../templates/meilisearch/index.yaml]
+- [search, ../templates/search/index.yaml]
+
+---
+# basic resources
+!yisp
+- flatten
+- - *postgres.main
+- - *redis.main
+- - *memcached.main
+
+---
+# main component
+!yisp
+- *concrnt.main
+- api:
+    image: ghcr.io/concrnt/ccapi
+    configpath: /etc/concrnt/config
+    svcType: LoadBalancer
+  gateway:
+    image: ghcr.io/concrnt/ccgateway
+    configpath: /etc/concrnt/config
+    svcType: LoadBalancer
+  dashboard:
+    image: ghcr.io/concrnt/web-dashboard
+
+---
+!yisp
+- *activitypub.main
+- image: ghcr.io/concrnt/ccworld-ap-bridge
+
+---
+!yisp
+- *hyperproxy.main
+- image: ghcr.io/concrnt/hyperproxy
+  memcachedAddr: "memcached:11211"
+
+---
+!yisp
+- *mediaserver.main
+- image: ghcr.io/totegamma/cc-media-server
+  dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+  bucketName: YOUR_BUCKET_NAME
+  endpointUrl: https://xxxxxx.r2.cloudflarestorage.com
+  accessKeyId: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  accessKeySecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  publicBaseUrl: https://pub-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.r2.dev/
+  region: auto
+  quota: "1000000000"
+
+---
+!yisp
+- *meilisearch.main
+- image: getmeili/meilisearch:prototype-japanese-13
+  master_key: concrnt-meilisearch
+  storage: 1Gi
+
+---
+!yisp
+- *search.main
+- image: "concrnt-meilisearch"
+  dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+  redisAddr: "redis:6379"
+  meilisearch:
+    url: "http://meilisearch:7700"
+    key: "concrnt-meilisearch"
+    idx: "concrnt"
+
+

@@ -1,0 +1,53 @@
+!yisp &deploy
+- lambda
+- [props]
+- !quote
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: gateway
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: gateway
+    template:
+      metadata:
+        labels:
+          name: gateway
+      spec:
+        containers:
+        - name: gateway
+          image: *props.image
+          ports:
+            - name: web
+              containerPort: 8080
+          env:
+            - name: CONCRNT_CONFIGS
+              value: *props.configpath
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          volumeMounts:
+            - name: concrnt-config
+              mountPath: /etc/concrnt/config
+              readOnly: true
+            - name: concrnt-static
+              mountPath: /etc/concrnt/static
+              readOnly: true
+            - name: concrnt-secret
+              mountPath: /etc/concrnt/secret
+              readOnly: true
+        volumes:
+          - name: concrnt-config
+            configMap:
+              name: concrnt-config
+          - name: concrnt-static
+            configMap:
+              name: concrnt-static
+          - name: concrnt-secret
+            secret:
+              secretName: concrnt-secret

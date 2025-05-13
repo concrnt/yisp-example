@@ -1,0 +1,23 @@
+!yisp
+- import
+- ["d", deployment.yaml]
+- ["s", service.yaml]
+
+---
+!yisp &api
+- lambda
+- [props]
+- - flatten
+  - - *d.deploy
+    - *props
+  - - *s.svc
+    - *props
+
+---
+# example
+!yisp
+- *api
+- image: ghcr.io/concrnt/ccapi
+  configpath: /etc/concrnt/config
+  svcType: LoadBalancer
+

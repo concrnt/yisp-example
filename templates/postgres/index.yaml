@@ -1,0 +1,6 @@
+!yisp &main
+- lambda
+- []
+- - include
+  - statefulset.yaml
+  - service.yaml

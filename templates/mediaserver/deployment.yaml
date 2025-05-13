@@ -1,0 +1,41 @@
+!yisp &deploy
+- lambda
+- [props]
+- !quote
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: mediaserver
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        name: mediaserver
+    template:
+      metadata:
+        labels:
+          name: mediaserver
+      spec:
+        containers:
+        - name: mediaserver
+          image: *props.image
+          ports:
+            - name: web
+              containerPort: 8000
+          env:
+            - name: bucketName
+              value: *props.bucketName
+            - name: endpointUrl
+              value: *props.endpointUrl
+            - name: accessKeyId
+              value: *props.accessKeyId
+            - name: accessKeySecret
+              value: *props.accessKeySecret
+            - name: publicBaseUrl
+              value: *props.publicBaseUrl
+            - name: db_dsn
+              value: *props.dsn
+            - name: quota
+              value: *props.quota
+            - name: region
+              value: *props.region

@@ -1,0 +1,6 @@
+!yisp &main
+- lambda
+- []
+- - include
+  - deployment.yaml
+  - service.yaml

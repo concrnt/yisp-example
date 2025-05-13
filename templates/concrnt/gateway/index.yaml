@@ -1,0 +1,23 @@
+!yisp
+- import
+- ["d", deployment.yaml]
+- ["s", service.yaml]
+
+---
+!yisp &gateway
+- lambda
+- [props]
+- - flatten
+  - - *d.deploy
+    - *props
+  - - *s.svc
+    - *props
+
+---
+# example
+!yisp
+- *gateway
+- image: ghcr.io/concrnt/ccgateway
+  configpath: /etc/concrnt/config
+  svcType: LoadBalancer
+

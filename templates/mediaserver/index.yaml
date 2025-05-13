@@ -1,0 +1,27 @@
+!yisp
+- import
+- ["d", deployment.yaml]
+
+---
+!yisp &main
+- lambda
+- [props]
+- - flatten
+  - - *d.deploy
+    - *props
+  - - include
+    - service.yaml
+
+---
+# example
+!yisp
+- *main
+- image: ghcr.io/totegamma/cc-media-server
+  dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+  bucketName: YOUR_BUCKET_NAME
+  endpointUrl: https://xxxxxx.r2.cloudflarestorage.com
+  accessKeyId: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  accessKeySecret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+  publicBaseUrl: https://pub-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.r2.dev/
+  region: auto
+  quota: "1000000000"

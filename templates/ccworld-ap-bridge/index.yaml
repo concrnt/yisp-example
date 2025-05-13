@@ -1,0 +1,19 @@
+!yisp
+- import
+- ["d", deployment.yaml]
+
+---
+!yisp &main
+- lambda
+- [props]
+- - flatten
+  - - *d.deploy
+    - *props
+  - - include
+    - service.yaml
+
+---
+# example
+!yisp
+- *main
+- image: ghcr.io/concrnt/ccworld-ap-bridge

@@ -1,0 +1,20 @@
+!yisp
+- import
+- ["s", statefulset.yaml]
+
+---
+!yisp &main
+- lambda
+- [props]
+- - flatten
+  - - *s.statefulset
+    - *props
+  - - include
+    - service.yaml
+
+---
+!yisp
+- *main
+- image: getmeili/meilisearch:prototype-japanese-13
+  master_key: concrnt-meilisearch
+  storage: 1Gi
