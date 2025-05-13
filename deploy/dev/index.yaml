@@ -82,14 +82,13 @@ kind: ConfigMap
 metadata:
   name: concrnt-config
 data: !yisp
-  - fromEntries
+  - from-entries
   - - map
     - - lambda
       - [file]
       - !quote
         - *file.name
         - *file.body
-    - - open
+    - - read-files
       - ./cm-files/*
-
 
