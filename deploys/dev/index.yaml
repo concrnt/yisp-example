@@ -1,14 +1,14 @@
 !yisp
 - import
-- [concrnt, ../../templates/concrnt/index.yaml]
-- [postgres, ../../templates/postgres/index.yaml]
-- [redis, ../../templates/redis/index.yaml]
-- [memcached, ../../templates/memcached/index.yaml]
-- [hyperproxy, ../../templates/hyperproxy/index.yaml]
-- [activitypub, ../../templates/ccworld-ap-bridge/index.yaml]
-- [mediaserver, ../../templates/mediaserver/index.yaml]
-- [meilisearch, ../../templates/meilisearch/index.yaml]
-- [search, ../../templates/search/index.yaml]
+- [concrnt, ../../components/concrnt/index.yaml]
+- [postgres, ../../components/postgres/index.yaml]
+- [redis, ../../components/redis/index.yaml]
+- [memcached, ../../components/memcached/index.yaml]
+- [hyperproxy, ../../components/hyperproxy/index.yaml]
+- [activitypub, ../../components/ccworld-ap-bridge/index.yaml]
+- [mediaserver, ../../components/mediaserver/index.yaml]
+- [meilisearch, ../../components/meilisearch/index.yaml]
+- [search, ../../components/search/index.yaml]
 
 ---
 # basic resources
