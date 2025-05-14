@@ -1,18 +1,14 @@
-!yisp &svc
-- lambda
-- [props]
-- !quote
-  apiVersion: v1
-  kind: Service
-  metadata:
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  labels:
     name: api
-    labels:
-      name: api
-  spec:
-    ports:
-    - port: 8000
-      targetPort: web
-      protocol: TCP
-    selector:
-      name: api
-    type: *props.svcType
+spec:
+  ports:
+  - port: 8000
+    targetPort: web
+    protocol: TCP
+  selector:
+    name: api
+  type: LoadBalancer

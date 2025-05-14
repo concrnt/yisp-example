@@ -1,7 +1,6 @@
 !yisp
 - import
 - ["d", deployment.yaml]
-- ["s", service.yaml]
 
 ---
 !yisp &api
@@ -10,8 +9,8 @@
 - - flatten
   - - *d.deploy
     - *props
-  - - *s.svc
-    - *props
+  - - include
+    - service.yaml
 
 ---
 # example

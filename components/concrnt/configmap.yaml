@@ -1,0 +1,50 @@
+!yisp &configmap
+- lambda
+- [props]
+- !quote
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: concrnt-config
+  data:
+    config.yaml: !yisp
+      - to-yaml
+      - server:
+          dsn: *props.server.dsn
+          gatewayAddr: gateway
+          redisAddr: *props.server.redisAddr
+          memcachedAddr: *props.server.memcachedAddr
+          traceEndpoint: *props.server.traceEndpoint
+          enableTrace: *props.server.enableTrace
+          captchaSitekey: *props.server.captchaSitekey
+          captchaSecret: *props.server.captchaSecret
+          vapidPublicKey: *props.server.vapidPublicKey
+          vapidPrivateKey: *props.server.vapidPrivateKey
+    
+        concrnt:
+          fqdn: *props.concrnt.fqdn
+          registration: *props.concrnt.registration
+          privatekey: *props.concrnt.privatekey
+          dimension: *props.concrnt.dimension
+    
+        profile:
+          nickname: *props.profile.nickname
+          description: *props.profile.description
+          logo: *props.profile.logo
+          wordmark: *props.profile.wordmark
+          themeColor: *props.profile.themeColor
+          maintainerName: *props.profile.maintainerName
+          maintainerEmail: *props.profile.maintainerEmail
+  
+    gateway.yaml: |-
+      services:
+        - name: net.concrnt.webui
+          host: ccwebui
+          port: 80
+          path: /web
+          preservePath: true
+        - name: net.concrnt.api
+          host: ccapi
+          port: 8000
+          path: /api/v1
+          injectCors: true

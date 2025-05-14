@@ -3,31 +3,72 @@
 - ["a", ./api/index.yaml]
 - ["g", ./gateway/index.yaml]
 - ["d", ./dashboard/index.yaml]
+- ["c", ./configmap.yaml]
 
 ---
 !yisp &main
 - lambda
 - [props]
 - - flatten
-  - - *a.api
-    - *props.api
-  - - *g.gateway
-    - *props.gateway
+  - &config
+    - *c.configmap
+    - *props
+  - - merge
+    - - car
+      - - *a.api
+        - image: *props.concrnt.appimage
+    - spec:
+        template:
+          metadata:
+            annotations:
+              checksum/config:
+                - sha256
+                - - to-yaml
+                  - *config
+  - - merge
+    - - car
+      - - *g.gateway
+        - image: *props.concrnt.gatewayimage
+    - spec:
+        template:
+          metadata:
+            annotations:
+              checksum/config:
+                - sha256
+                - - to-yaml
+                  - *config
   - - *d.dashboard
-    - *props.dashboard
+    - image: *props.concrnt.webimage
 
 ---
 # example
 !yisp
 - *main
-- api:
-    image: ghcr.io/concrnt/ccapi
-    configpath: /etc/concrnt/config
-    svcType: LoadBalancer
-  gateway:
-    image: ghcr.io/concrnt/ccgateway
-    configpath: /etc/concrnt/config
-    svcType: LoadBalancer
-  dashboard:
-    image: ghcr.io/concrnt/web-dashboard
-
+- server:
+    dsn: "host=db user=postgres password=postgres dbname=concrnt port=5432 sslmode=disable"
+    redisAddr: "redis:6379"
+    memcachedAddr: "memcached:11211"
+    captchaSitekey: "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+    captchaSecret: "6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+    vapidPublicKey: ""
+    vapidPrivateKey: ""
+    traceEndpoint: ""
+    enableTrace: false
+  concrnt:
+    appimage: ghcr.io/concrnt/ccapi
+    gatewayimage: ghcr.io/concrnt/ccgateway
+    webimage: ghcr.io/concrnt/web-dashboard
+  
+    servicetype: ClusterIP
+    fqdn: example.tld
+    registration: invite
+    privatekey: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    dimension: concrnt-devnet
+  profile:
+    nickname: concrnt-domain
+    description: domain description
+    logo: ""
+    wordmark: ""
+    themeColor: "#20193b"
+    maintainerName: changeme
+    maintainerEmail: changeme@example.com

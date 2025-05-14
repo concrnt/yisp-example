@@ -22,9 +22,6 @@
           ports:
             - name: web
               containerPort: 8080
-          env:
-            - name: CONCRNT_CONFIGS
-              value: *props.configpath
           livenessProbe:
             httpGet:
               path: /health
