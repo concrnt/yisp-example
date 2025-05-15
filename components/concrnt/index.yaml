@@ -4,22 +4,7 @@
 - ["g", ./gateway/index.yaml]
 - ["d", ./dashboard/index.yaml]
 - ["c", ./configmap.yaml]
-
----
-!yisp &filtered-patch
-- lambda
-- [props]
-- - map
-  - - lambda
-    - [x]
-    - - if
-      - - *props.matcher
-        - *x
-      - - merge
-        - *x
-        - *props.patch
-      - *x
-  - *props.input
+- ["util", ../../functions/util.yaml]
 
 ---
 !yisp &main
@@ -30,7 +15,7 @@
     - *c.configmap
     - *props
 
-  - - *filtered-patch
+  - - *util.selective-patch
     - input:
         - *a.api
         - image: *props.concrnt.appimage
@@ -50,7 +35,7 @@
                   - - to-yaml
                     - *config
 
-  - - *filtered-patch
+  - - *util.selective-patch
     - input:
         - *g.gateway
         - image: *props.concrnt.gatewayimage
