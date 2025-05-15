@@ -1,0 +1,12 @@
+!yisp
+- import
+- [kube, ../../functions/kube.yaml]
+
+---
+
+## configmaps
+!yisp
+- *kube.configmap-generator
+- name: "concrnt-config"
+  dir: "./cm-files/*"
+

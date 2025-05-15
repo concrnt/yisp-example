@@ -4,7 +4,7 @@
 - ["g", ./gateway/index.yaml]
 - ["d", ./dashboard/index.yaml]
 - ["c", ./configmap.yaml]
-- ["util", ../../functions/util.yaml]
+- ["kube", ../../functions/kube.yaml]
 
 ---
 !yisp &main
@@ -15,18 +15,16 @@
     - *c.configmap
     - *props
 
-  - - *util.selective-patch
+  - - *kube.selective-patch
     - input:
-        - *a.api
-        - image: *props.concrnt.appimage
-      matcher:
-        - lambda
-        - [x]
-        - - ==
-          - *x.kind
-          - Deployment
+        - flatten
+        - - *a.api
+          - image: *props.concrnt.appimage
+        - - *g.gateway
+          - image: *props.concrnt.gatewayimage
+      kind: Deployment
       patch:
-        spec: &patch-spec
+        spec:
           template:
             metadata:
               annotations:
@@ -34,18 +32,6 @@
                   - sha256
                   - - to-yaml
                     - *config
-
-  - - *util.selective-patch
-    - input:
-        - *g.gateway
-        - image: *props.concrnt.gatewayimage
-      matcher:
-        - lambda
-        - [x]
-        - - ==
-          - *x.kind
-          - Deployment
-      patch: *patch-spec
 
   - - *d.dashboard
     - image: *props.concrnt.webimage

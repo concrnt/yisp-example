@@ -10,6 +10,8 @@
 - [meilisearch, ../../components/meilisearch/index.yaml]
 - [search, ../../components/search/index.yaml]
 
+- [kube, ../../functions/kube.yaml]
+
 ---
 
 !yisp
@@ -102,19 +104,9 @@
     idx: "concrnt"
 
 ---
-# configmaps
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: concrnt-config
-data: !yisp
-  - from-entries
-  - - map
-    - - lambda
-      - [file]
-      - !quote
-        - *file.name
-        - *file.body
-    - - read-files
-      - ./cm-files/*
+## configmaps
+!yisp
+- *kube.configmap-generator
+- name: "concrnt-config"
+  dir: "./cm-files/*"
 
