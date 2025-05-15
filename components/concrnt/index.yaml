@@ -6,6 +6,22 @@
 - ["c", ./configmap.yaml]
 
 ---
+!yisp &filtered-patch
+- lambda
+- [props]
+- - map
+  - - lambda
+    - [x]
+    - - if
+      - - *props.matcher
+        - *x
+      - - merge
+        - *x
+        - *props.patch
+      - *x
+  - *props.input
+
+---
 !yisp &main
 - lambda
 - [props]
@@ -13,30 +29,39 @@
   - &config
     - *c.configmap
     - *props
-  - - merge
-    - - car
-      - - *a.api
+
+  - - *filtered-patch
+    - input:
+        - *a.api
         - image: *props.concrnt.appimage
-    - spec:
-        template:
-          metadata:
-            annotations:
-              checksum/config:
-                - sha256
-                - - to-yaml
-                  - *config
-  - - merge
-    - - car
-      - - *g.gateway
+      matcher:
+        - lambda
+        - [x]
+        - - ==
+          - *x.kind
+          - Deployment
+      patch:
+        spec: &patch-spec
+          template:
+            metadata:
+              annotations:
+                checksum/config:
+                  - sha256
+                  - - to-yaml
+                    - *config
+
+  - - *filtered-patch
+    - input:
+        - *g.gateway
         - image: *props.concrnt.gatewayimage
-    - spec:
-        template:
-          metadata:
-            annotations:
-              checksum/config:
-                - sha256
-                - - to-yaml
-                  - *config
+      matcher:
+        - lambda
+        - [x]
+        - - ==
+          - *x.kind
+          - Deployment
+      patch: *patch-spec
+
   - - *d.dashboard
     - image: *props.concrnt.webimage
 
